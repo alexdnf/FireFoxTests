@@ -6,11 +6,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                      sudo docker-compose up -d
-                      sleep 20
-                      java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar &
-                      sleep 60
-                      chmod +x gradlew
+                      start java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar
+                      PowerShell Start-Sleep -s 60
+                      
                     '''
                 }
             }
