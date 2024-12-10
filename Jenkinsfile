@@ -1,23 +1,14 @@
 pipeline {
     agent any
-    
-    stages {
-        stage('Setup Environment') {
-            steps {
-                script {
-                        - docker-compose up -d
-                        - sleep 30
-                        - java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar artifacts/aqa-shop.jar &
-                        - sleep 60   
-                }
-            }
-        }
 
-        stage('Build and Test') {
+    stages {
+        stage('Build') {
             steps {
-                script {
-                    - ./gradlew "-Ddb.url=jdbc:mysql://localhost:3306/app" test --info -Dselenide.headless=true'
-                }
+                sh 'docker-compose up -d'
+                sleep(time: 30, unit: 'SECONDS')
+                sh 'java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar artifacts/aqa-shop.jar &'
+                sleep(time: 60, unit: 'SECONDS')
+                sh './gradlew -Ddb.url=jdbc:mysql://localhost:3306/app test --info -Dselenide.headless=true'
             }
         }
     }
